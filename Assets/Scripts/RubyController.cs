@@ -28,6 +28,8 @@ public class RubyController : MonoBehaviour
     Animator animator;
     Vector2 lookDirection = new Vector2(1, 0);
 
+    AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,8 @@ public class RubyController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         currentHealth = maxHealth;
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -65,6 +69,18 @@ public class RubyController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             Launch();
+        }
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(rigidbody2d.position + Vector2.up * 0.2f, lookDirection, 1.5f, LayerMask.GetMask("NPC"));
+            if (hit.collider != null)
+            {
+                NonPlayerCharacter character = hit.collider.GetComponent<NonPlayerCharacter>();
+                if (character != null)
+                {
+                    character.DisplayDialog();
+                }
+            }
         }
     }
 
@@ -101,5 +117,10 @@ public class RubyController : MonoBehaviour
         projectile.Launch(lookDirection, 300);
 
         animator.SetTrigger("Launch");
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 }
